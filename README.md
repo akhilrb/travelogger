@@ -76,14 +76,14 @@ Avaliable disk space = 6745.21875 MB
 
 ```
 
-and stores all files with the prefix `sunset` in a folder named `timelapse` in the same directory.
+and stores all files with the prefix `sunset` in a folder named `timelapse` outside the parent directory.
 
 ---
 
 ### Forcing total frames
 
 ```
-python3 recorder.py -fp ../timelapse -ip sunset -fs 640x480 -tf 500 -ofps 30
+python3 recorder.py -fp timelapse -ip sunset -fs 640x480 -tf 500 -ofps 30
 ```
 
 sets and displays the following configuration:
@@ -98,7 +98,6 @@ Avaliable disk space = 6743.77734375 MB
 
 ```
 
-and stores all files with the prefix `sunset` in a folder named `timelapse` in the parent directory.  
 Notice that the set output frame-rate value was over-ridden with the set number of frames.  
 
 ---
