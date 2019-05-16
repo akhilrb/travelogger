@@ -41,6 +41,11 @@ For a quick test, run:
 python3 recorder.py
 ```
 
+On headless installations (with no GUI or X-session), run:  
+```
+python3 recorder.py -fu
+```
+
 A new folder with the script's runtime-stamp will be created and all frames and the stitched video will be stored in it.  
 
 ### Configurables
@@ -55,7 +60,7 @@ A new folder with the script's runtime-stamp will be created and all frames and 
 |--output-time|-ot|60|recording output time|
 |--total-frames|-tf|1440|total frames|
 |--out-frame-rate|-ofps|24|output fps|
-|--force-usb|-fu|-|force input from a video device|
+|--force-usb|-fu|False|force input from a video device|
 
 ---
 
@@ -103,7 +108,9 @@ Notice that the set output frame-rate value was over-ridden with the set number 
 
 ---
 
-### Errors
+## Problems
+
+### VCHIQ instances
 
 `* failed to open vchiq instance`  
 is a known error prompt which is encountered while trying to use the GPU for stitching the images.  
@@ -113,3 +120,14 @@ Add the user to the **video** group using:
 `sudo usermod -aG video $(whoami)`
 
 It is probably better from a perspective of security to make a separate user with video permissions and run travelogger through that user.
+
+### Root permissions
+
+On headless installations, reading the video device requires root privileges, which is difficult for setting up cron-jobs, essentially defeating the very utility of travelogger.  
+There are some workarounds to this problem:  
+1. Run travelogger as root. But this doesn't sound very comforting.
+2. The password can be supplied using a file which is read after the password prompt, but this method is really insecure.
+
+Please enjoy travelogger through CLI until I find a secure workaround :)
+
+---
