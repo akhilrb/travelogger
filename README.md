@@ -55,6 +55,7 @@ A new folder with the script's runtime-stamp will be created and all frames and 
 |--output-time|-ot|60|recording output time|
 |--total-frames|-tf|1440|total frames|
 |--out-frame-rate|-ofps|24|output fps|
+|--force-usb|-fu|-|force input from a video device|
 
 ---
 
@@ -101,3 +102,14 @@ Avaliable disk space = 6743.77734375 MB
 Notice that the set output frame-rate value was over-ridden with the set number of frames.  
 
 ---
+
+### Errors
+
+`* failed to open vchiq instance`  
+is a known error prompt which is encountered while trying to use the GPU for stitching the images.  
+It is probable that the user running travelogger is not in the **video** group.
+
+Add the user to the **video** group using:  
+`sudo usermod -aG video $(whoami)`
+
+It is probably better from a perspective of security to make a separate user with video permissions and run travelogger through that user.

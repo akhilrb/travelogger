@@ -17,6 +17,8 @@ parser.add_argument('--output-time', '-ot', dest='outputTime',type=str, action='
 # output fps manual configuration
 parser.add_argument('--total-frames', '-tf', dest='totalFrames',type=str, action='store', default='-1', help='total frames')
 parser.add_argument('--out-frame-rate', '-ofps', dest='ofps',type=str, action='store', default='24', help='output fps')
+# cheap hack for headless installations
+parser.add_argument('--force-usb', '-fu', dest='fu', action='store_true', help='force input from USB video device')
 settings = parser.parse_args()
 
 CONFIG_FILE_EXTENSION = ".cgp"
@@ -32,9 +34,9 @@ OFPS = settings.ofps
 if(settings.totalFrames != '-1'):
     TOTAL_FRAMES = settings.totalFrames
     OFPS = str(float(TOTAL_FRAMES)/float(OUTPUT_TIME))
-else: 
+else:
     TOTAL_FRAMES = str(int(float(OUTPUT_TIME)*float(OFPS)))
-    
+
 IFPS = str(float(TOTAL_FRAMES)/float(INPUT_TIME))
 DELAY = str(float(1)/float(IFPS))
 ZERO_DIGITS = len(TOTAL_FRAMES)
@@ -102,9 +104,20 @@ def setupCamera():
         # USB Camera
         print(GREEN+"USB camera deteced"+NC)
         captureCommand = "streamer -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
+    # Either the cameras are not connected, or there is no x-session available.
+    # This might be a headless install
     else:
         print(RED+"No grabber device detected!"+NC)
-        sys.exit()
+        # Try to look for video devices in the /dev directory
+        if(settings.fu):
+            forcedDevice = cmdLine("ls /dev | grep video")
+            if(forcedDevice == ""):
+                print(RED+"Failed to recognize any input video devices!"+NC)
+                sys.exit()
+            print(YELLOW+"Forcing input from /dev/"+NC+forcedDevice)
+            captureCommand = "sudo streamer -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
+        else:
+            sys.exit()
 
 #configPrompt()
 
