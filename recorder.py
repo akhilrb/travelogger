@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import subprocess
 import time
@@ -115,8 +116,9 @@ def setupCamera():
                 print(RED+"Failed to recognize any input video devices!"+NC)
                 sys.exit()
             print(YELLOW+"Forcing input from /dev/"+NC+forcedDevice)
-            captureCommand = "sudo streamer -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
+            captureCommand = "streamer -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
         else:
+            print(RED+"Exiting"+NC)
             sys.exit()
 
 #configPrompt()
