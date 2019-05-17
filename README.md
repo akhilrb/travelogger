@@ -84,6 +84,8 @@ Avaliable disk space = 6745.21875 MB
 
 and stores all files with the prefix `sunset` in a folder named `timelapse` outside the parent directory.
 
+All examples can be repeated on headless installations by adding `-fu` flag.
+
 ---
 
 ### Forcing total frames
@@ -123,11 +125,7 @@ It is probably better from a perspective of security to make a separate user wit
 
 ### Root permissions
 
-On headless installations, reading the video device requires root privileges, which is difficult for setting up cron-jobs, essentially defeating the very utility of travelogger.  
-There are some workarounds to this problem:  
-1. Run travelogger as root. But this doesn't sound very comforting.
-2. The password can be supplied using a file which is read after the password prompt, but this method is really insecure.
-
-Please enjoy travelogger through CLI until I find a secure workaround :)
+On headless installations with new users, reading the video device requires root privileges, which is difficult for setting up cron-jobs, essentially defeating the very utility of travelogger.  
+The solution, again, is adding the user to the **video** group as mentioned above.
 
 ---
