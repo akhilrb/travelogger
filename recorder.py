@@ -9,17 +9,18 @@ import datetime
 import psutil
 
 parser = argparse.ArgumentParser(description='Record a timelapse')
-parser.add_argument('--image-prefix', '-ip', dest='imagePrefix',type=str, action='store', default='timelapse', help='name prefix')
-parser.add_argument('--image-extension', '-ie', dest='imageExtension',type=str, action='store', default='jpeg', help='extension')
-parser.add_argument('--folder-prefix', '-fp', dest='folderPrefix',type=str, action='store', default='timelapse', help='folder prefix')
-parser.add_argument('--frame-size', '-fs', dest='frameSize',type=str, action='store', default='1280x720', help='resolution')
-parser.add_argument('--input-time', '-it', dest='inputTime',type=str, action='store', default='1800', help='recording input time')
-parser.add_argument('--output-time', '-ot', dest='outputTime',type=str, action='store', default='60', help='recording output time')
+parser.add_argument('--image-prefix', '-ip', dest='imagePrefix', type=str, action='store', default='timelapse', help='name prefix')
+parser.add_argument('--image-extension', '-ie', dest='imageExtension', type=str, action='store', default='jpeg', help='extension')
+parser.add_argument('--folder-prefix', '-fp', dest='folderPrefix', type=str, action='store', default='timelapse', help='folder prefix')
+parser.add_argument('--frame-size', '-fs', dest='frameSize', type=str, action='store', default='1280x720', help='resolution')
+parser.add_argument('--input-time', '-it', dest='inputTime', type=str, action='store', default='1800', help='recording input time')
+parser.add_argument('--output-time', '-ot', dest='outputTime', type=str, action='store', default='60', help='recording output time')
 # output fps manual configuration
-parser.add_argument('--total-frames', '-tf', dest='totalFrames',type=str, action='store', default='-1', help='total frames')
-parser.add_argument('--out-frame-rate', '-ofps', dest='ofps',type=str, action='store', default='24', help='output fps')
-# cheap hack for headless installations
-parser.add_argument('--force-usb', '-fu', dest='fu', action='store_true', help='force input from USB video device')
+parser.add_argument('--total-frames', '-tf', dest='totalFrames', type=str, action='store', default='-1', help='total frames')
+parser.add_argument('--out-frame-rate', '-ofps', dest='ofps', type=str, action='store', default='24', help='output fps')
+# for headless installations, let the user choose the video device
+parser.add_argument('--force-input', '-fi', dest='forceInput', action='store_true', help='force input from video device')
+parser.add_argument('--forced-device', '-fd', dest='forcedDevice', type=str, action='store', default='video0', help='custom input for video device')
 settings = parser.parse_args()
 
 CONFIG_FILE_EXTENSION = ".cgp"
@@ -107,13 +108,13 @@ def setupCamera():
     else:
         print(RED+"No grabber device detected!"+NC)
         # Try to look for video devices in the /dev directory
-        if(settings.fu):
-            forcedDevice = cmdLine("ls /dev | grep video")
-            if(forcedDevice == ""):
-                print(RED+"Failed to recognize any input video devices!"+NC)
+        if(settings.forceInput):
+            listDev = cmdLine("ls /dev").split("\n")
+            if "'"+settings.forcedDevice+"'" in listDev:	# this is just how the list is generated, with single quotes
+                print(RED+"Failed to recognize "+(settings.forcedDevice)+NC)
                 sys.exit()
-            print(YELLOW+"Forcing input from /dev/"+NC+forcedDevice)
-            captureCommand = "streamer -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
+            print(YELLOW+"Forcing input from "+(settings.forcedDevice)+NC)
+            captureCommand = "streamer -c /dev/" + settings.forcedDevice + " -t " + TOTAL_FRAMES + " -r " + IFPS + " -s " + FRAME_SIZE + " -o " + FOLDER_PREFIX + "/" + IMAGE_PREFIX + zeros + IMAGE_EXTENSION
         else:
             print(RED+"Exiting"+NC)
             sys.exit()

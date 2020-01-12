@@ -60,7 +60,8 @@ A new folder with the script's runtime-stamp will be created and all frames and 
 |--output-time|-ot|60|recording output time|
 |--total-frames|-tf|1440|total frames|
 |--out-frame-rate|-ofps|24|output fps|
-|--force-usb|-fu|False|force input from a video device|
+|--force-input|-fi|False|force input from a video device|
+|--forced-device|-fd|video0|custom input for video device|
 
 ---
 
@@ -84,7 +85,12 @@ Avaliable disk space = 6745.21875 MB
 
 and stores all files with the prefix `sunset` in a folder named `timelapse` outside the parent directory.
 
-All examples can be repeated on headless installations by adding `-fu` flag.
+*All examples can be repeated on headless installations by adding* `-fi` *flag.*  
+*A custom input video device can be selected by using the* `-fd` *flag.*
+
+```
+python3 recorder.py -fp ../timelapse -ip sunset -fs 640x480 -it 3600 -ot 30 -fi -fd video2
+```
 
 ---
 
