@@ -81,15 +81,12 @@ def printSpecifications():
 def prepareFolderVariables():
     # prepare folder variables to be used for the entire run
     global IMAGE_PREFIX, FOLDER_PREFIX
-    tt = datetime.datetime.today().timetuple()
-    folderName = str(tt.tm_year) + str(tt.tm_mon) + str(tt.tm_mday) + str(tt.tm_hour) + str(tt.tm_min) + str(tt.tm_sec)
-    FOLDER_PREFIX += folderName
+    FOLDER_PREFIX += datetime.datetime.today().strftime("%Y.%m.%d--%H.%M.%S")
     cmdLineWaitUntilExecution("mkdir " + FOLDER_PREFIX)
 
 def setupCamera():
     # detect camera and prepare capture command accordingly
     global captureCommand
-    
     zeros = ""
     for x in range(ZERO_DIGITS):
         zeros+="0"
@@ -139,7 +136,7 @@ try:
     startTime = time.perf_counter()
     print(BLUE+"Stitching images, please wait..."+NC)
     cmd1 = "gst-launch-1.0 multifilesrc location=" + FOLDER_PREFIX + "/" + IMAGE_PREFIX + "%0" + str(ZERO_DIGITS) + "d.jpeg "
-    cmd2 = "index=1 caps="+"image/jpeg,framerate="+OFPS+"/1"+" ! jpegdec ! omxh264enc ! avimux ! filesink location="+FOLDER_PREFIX+"/"+IMAGE_PREFIX+".avi"
+    cmd2 = "index=1 caps="+"image/jpeg,framerate="+OFPS+"/1"+" ! jpegdec ! omxh264enc ! avimux ! filesink location="+FOLDER_PREFIX+"/mov_"+FOLDER_PREFIX+".avi"
     cmdLineWaitUntilExecution(cmd1+cmd2)
     endTime = time.perf_counter()
     print(GREEN+"Finished "+NC+"(%s)" % secsToHours(endTime - startTime))
